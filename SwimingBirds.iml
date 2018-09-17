@@ -106,5 +106,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="xmlpublic" level="project" />
+    <orderEntry type="library" name="resolver" level="project" />
   </component>
 </module>

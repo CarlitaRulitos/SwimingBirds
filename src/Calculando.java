@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Calculando {
 
-    public int calcularMinimo(ArrayList<Despacho> datos){
+    public static int calcularMinimo(ArrayList<Despacho> datos){
         int minimo = 0;
         for(int i = 0; i < datos.size(); i++){
             if(i == 0){
@@ -15,7 +15,7 @@ public class Calculando {
         return minimo;
     }
 
-    public int calcularRango(ArrayList<Despacho> datos){
+    public static int calcularRango(ArrayList<Despacho> datos){
         int minimo = calcularMinimo(datos);
         int maximo = 0;
 
@@ -30,7 +30,7 @@ public class Calculando {
         return maximo - minimo;
     }
 
-    public int calcularCuartil(ArrayList<Despacho> datos, int cuartil){
+    public static int calcularCuartil(ArrayList<Despacho> datos, int cuartil){
         int rango = calcularRango(datos);
         int minimo = calcularMinimo(datos);
         if(cuartil == 1){
@@ -46,4 +46,5 @@ public class Calculando {
             return -1;
         }
     }
+
 }

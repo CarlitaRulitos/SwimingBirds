@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) throws ParseException, IOException{
-        File f = new File("/Users/yian/Desktop/Prueba_Excel.xlsx");
+        File f = new File("C:\\Users\\Carlita\\Desktop\\ArquiCarlita.xlsx");
         Leyendome mateo = new Leyendome(f);
 
         BufferedReader lector= new BufferedReader(new InputStreamReader(System.in));
@@ -24,13 +24,36 @@ public class Main {
         DateFormat format = new SimpleDateFormat("dd-mm-yyyy");
         Date fechaInicio = format.parse(fecha1);
         Date fechaFin = format.parse(fecha2);
+
+
+        ArrayList<Despacho> datos = mateo.sumaArticulos(fechaInicio, fechaFin);
+        mostrarPorConsola(datos);
     }
 
-    public ArrayList<Despacho> sumaArticulos(Date fechaInicio, Date fechaFin){
-        ArrayList<Despacho> datos =
-    }
 
-    public void mostrarPorConsola(ArrayList<Despacho> datos){
 
+    public static void mostrarPorConsola(ArrayList<Despacho> datos){
+        System.out.println("Nombre Artículo--Cantidad de Unidades--Monto Total");
+        int uno = Calculando.calcularCuartil(datos,1);
+        int dos = Calculando.calcularCuartil(datos,2);
+        int tres = Calculando.calcularCuartil(datos,3);
+        for(int i=0; i<datos.size(); i++){
+            if (datos.get(i).getMontoTotal()< uno){
+                System.out.println("Cuartil 1:");
+                System.out.println(datos.get(i).getNombreArticulo()+"--"+datos.get(i).getCantidadUnidades()+"--"+datos.get(i).getMontoTotal());
+            }
+            else if (datos.get(i).getMontoTotal()< dos){
+                System.out.println("Cuartil 2:");
+                System.out.println(datos.get(i).getNombreArticulo()+"--"+datos.get(i).getCantidadUnidades()+"--"+datos.get(i).getMontoTotal());
+            }
+            else if (datos.get(i).getMontoTotal()< tres){
+                System.out.println("Cuartil 3:");
+                System.out.println(datos.get(i).getNombreArticulo()+"--"+datos.get(i).getCantidadUnidades()+"--"+datos.get(i).getMontoTotal());
+            }
+            else if (datos.get(i).getMontoTotal()>= tres){
+                System.out.println("Cuartil 4:");
+                System.out.println(datos.get(i).getNombreArticulo()+"--"+datos.get(i).getCantidadUnidades()+"--"+datos.get(i).getMontoTotal());
+            }
+        }
     }
 }

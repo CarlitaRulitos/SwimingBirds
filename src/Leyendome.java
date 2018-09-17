@@ -54,67 +54,66 @@ public class Leyendome {
 
         Despacho d;
         for (int i = 1; i < data.size(); i++) {
+            id_tran = 0;
+            fecha_sol = null;
+            cod_clien = 0;
+            raz_soc = null;
+            cod_artic = 0;
+            nom_artic = null;
+            valor_uni = 0;
+            cant_unid = 0;
+            monto_total = 0;
+            estado = null;
+            fecha_desp = null;
+
             List ejlist = (List) data.get(i);
-            ArrayList ejem = new ArrayList();
             for (int j = 0; j < ejlist.size(); j++) {
                 XSSFCell celda = (XSSFCell) ejlist.get(j);
                 String celdaSt = celda.toString();
                 if (j == 0) {
                     id_tran = (int) (Double.parseDouble(celdaSt));
-                    ejem.add(id_tran);
                 }
                 if (j == 1) {
                     SimpleDateFormat fecha = new SimpleDateFormat("dd-MMM-yyyy");
                     fecha_sol = fecha.parse(celdaSt);
-                    ejem.add(fecha_sol);
                 }
                 if (j == 2) {
                     cod_clien = (int) (Double.parseDouble(celdaSt));
-                    ejem.add(cod_clien);
                 }
                 if (j == 3) {
                     raz_soc = celdaSt;
-                    ejem.add(raz_soc);
                 }
                 if (j == 4) {
                     cod_artic = (int) (Double.parseDouble(celdaSt));
-                    ejem.add(cod_artic);
                 }
                 if (j == 5) {
                     nom_artic = celdaSt;
-                    ejem.add(nom_artic);
                 }
                 if (j == 6) {
                     valor_uni = (int) (Double.parseDouble(celdaSt));
-                    ejem.add(valor_uni);
                 }
                 if (j == 7) {
                     cant_unid = (int) (Double.parseDouble(celdaSt));
-                    ejem.add(cant_unid);
                 }
                 if (j == 8) {
                     monto_total = (int) (Double.parseDouble(celdaSt));
-                    ejem.add(monto_total);
                 }
                 if (j == 9) {
                     estado = celdaSt;
-                    ejem.add(estado);
                 }
                 if (j == 10) {
                     if ("".equals(celdaSt)) {
-
                         fecha_desp = null;
-                        ejem.add(fecha_desp);
                     } else {
                         SimpleDateFormat fecha = new SimpleDateFormat("dd-MMM-yyyy");
                         fecha_desp = fecha.parse(celdaSt);
-                        ejem.add(fecha_desp);
                     }
                 }
-                if (j == 10 && ejem.get(10) != "") {
-                    d = new Despacho((int) (ejem.get(0)), (Date) (ejem.get(1)), (int) (ejem.get(2)), (String) (ejem.get(3)), (int) ejem.get(4), (String) ejem.get(5), (int) ejem.get(6), (int) ejem.get(7), (int) ejem.get(8), (String) ejem.get(9), (Date) ejem.get(10));
-                    todos.add(d);
-                }
+            }
+
+            if(id_tran != 0) {
+                d = new Despacho(id_tran, fecha_sol, cod_clien, raz_soc, cod_artic, nom_artic, valor_uni, cant_unid, monto_total, estado, fecha_desp);
+                todos.add(d);
             }
         }
     }
@@ -134,8 +133,8 @@ public class Leyendome {
             solicitud = aux.getFechaSol();
             fechaDespacho = aux.getFechaDesp();
 
-            if (fechaInicio.compareTo(solicitud) >= 0 && fechaFin.compareTo(solicitud) <= 0) {
-                if (fechaDespacho != null && fechaInicio.compareTo(fechaDespacho) >= 0 && fechaFin.compareTo(fechaDespacho) <= 0) {
+            if (fechaInicio.compareTo(solicitud) <= 0 && fechaFin.compareTo(solicitud) >= 0) {
+                if (fechaDespacho != null && fechaInicio.compareTo(fechaDespacho) <= 0 && fechaFin.compareTo(fechaDespacho) >= 0) {
                     rangito.add(aux);
                 }
             }
@@ -144,5 +143,40 @@ public class Leyendome {
         return rangito;
     }
 
-    
+
+    public ArrayList<Despacho> sumaArticulos(Date fechaInicio, Date fechaFin){
+        ArrayList<Despacho> datos = getDespachosenRango(fechaInicio, fechaFin);
+        datos.sort(new SortDespacho());
+
+        ArrayList<Despacho> fin = new ArrayList<Despacho>();
+        int valor = 0;
+        Despacho despacho= datos.get(valor);
+        int cantUn=despacho.getCantidadUnidades();
+        int montoTotal=despacho.getMontoTotal();
+
+        for (int i=1; i<datos.size(); i++) {
+            if (despacho.getCodArticulo() == datos.get(i).getCodArticulo()) {
+                cantUn += datos.get(i).getCantidadUnidades();
+                montoTotal += datos.get(i).getMontoTotal();
+                valor++;
+            } else {
+                despacho.setCantidadUnidades(cantUn);
+                despacho.setMontoTotal(montoTotal);
+                fin.add(despacho);
+                valor++;
+                despacho = datos.get(valor);
+                cantUn = despacho.getCantidadUnidades();
+                montoTotal = despacho.getMontoTotal();
+            }
+        }
+        despacho.setCantidadUnidades(cantUn);
+        despacho.setMontoTotal(montoTotal);
+        fin.add(despacho);
+
+        return fin;
+    }
+
+    public ArrayList<Despacho> sortMonto (ArrayList<Despacho> datos){
+        return datos;
+    }
 }
